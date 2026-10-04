@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Install and run PAWM locally.">
+  <title>Setup · PAWM Docs</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <div class="site-shell">
+    <aside class="sidebar">
+      <a class="brand" href="index.html"><img src="../public/LOGO.svg" alt="PAWM logo"><span>PAWM <small>DOCUMENTATION</small></span></a>
+      <p class="nav-label">GUIDES</p>
+      <nav aria-label="Documentation">
+        <a class="nav-link" href="index.html">Overview</a>
+        <a class="nav-link active" aria-current="page" href="setup.html">Setup</a>
+        <a class="nav-link" href="user-manual.html">User manual</a>
+        <a class="nav-link" href="architecture.html">Project structure</a>
+      </nav>
+      <div class="sidebar-note"><span class="status-dot"></span> Local-first workspace<br><span>FastAPI · Vue · JSON storage</span></div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar"><span>GUIDES / SETUP</span><a href="../LICENSE">MIT License</a></header>
+      <article class="article">
+        <p class="eyebrow">GUIDE 01 · FIRST RUN</p>
+        <h1>Install & run</h1>
+        <p class="lede">The backend is a Python FastAPI application. Python is required to run PAWM. Node.js and npm are only needed when developing or rebuilding the Vue frontend.</p>
+        <h2>Requirements</h2>
+        <ul class="check-list"><li><strong>Python</strong> installed and available in your terminal.</li><li><strong>Node.js and npm</strong> for frontend development (the project expects Node.js 22.18+ or 24.12+).</li></ul>
+        <h2>Run the application</h2>
+        <p>Open PowerShell at the repository root. Create and activate a virtual environment, then install backend packages:</p>
+        <pre><code>python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r Backend/requirements.txt</code></pre>
+        <p>Start the server from the repository root:</p>
+        <pre class="command"><code>uvicorn Backend.main:app --port 8080</code></pre>
+        <p>Open <a href="http://localhost:8080">http://localhost:8080</a>. The health check is at <a href="http://localhost:8080/health">/health</a>; the interactive API reference is at <a href="http://localhost:8080/docs">/docs</a>.</p>
+        <div class="notice"><strong>Frontend bundle</strong><p>The backend serves the compiled frontend from <code>Frontend/</code>, which is included in this project. If you change frontend code and need to regenerate the bundle, run the build steps below before launching the backend.</p></div>
+        <h2>Frontend development</h2>
+        <p>Install Node dependencies and start Vite, or build the frontend bundle:</p>
+        <pre><code>npm install
+npm run dev</code></pre>
+        <p>To build the frontend into <code>Frontend/</code> for the FastAPI server:</p>
+        <pre><code>npm run build</code></pre>
+        <p class="small-note">Run these commands from the repository root. Vite uses port 5173; the FastAPI app uses port 8080.</p>
+        <h2>Where data goes</h2>
+        <p>The web backend currently configures storage at the project’s <code>Storage/</code> directory. The standalone Python storage API defaults to <code>Documents/PAWM_DATA</code> when created without an explicit directory; that is not the path currently selected by the web app.</p>
+        <p>Storage is local filesystem data, not a cloud backup. Protect it accordingly and make your own backups.</p>
+      </article>
+      <footer class="page-footer"><a href="index.html">← Overview</a><a href="user-manual.html">Next: User manual →</a></footer>
+    </main>
+  </div>
+</body>
+</html>

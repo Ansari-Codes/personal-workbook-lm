@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PAWM user manual for profiles, workbooks, API keys, and tools.">
+  <title>User Manual · PAWM Docs</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <div class="site-shell">
+    <aside class="sidebar">
+      <a class="brand" href="index.html"><img src="../public/LOGO.svg" alt="PAWM logo"><span>PAWM <small>DOCUMENTATION</small></span></a>
+      <p class="nav-label">GUIDES</p>
+      <nav aria-label="Documentation">
+        <a class="nav-link" href="index.html">Overview</a>
+        <a class="nav-link" href="setup.html">Setup</a>
+        <a class="nav-link active" aria-current="page" href="user-manual.html">User manual</a>
+        <a class="nav-link" href="architecture.html">Project structure</a>
+      </nav>
+      <div class="sidebar-note"><span class="status-dot"></span> Local-first workspace<br><span>FastAPI · Vue · JSON storage</span></div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar"><span>GUIDES / USER MANUAL</span><a href="../LICENSE">MIT License</a></header>
+      <article class="article">
+        <p class="eyebrow">GUIDE 02 · USING PAWM</p>
+        <h1>User manual</h1>
+        <p class="lede">PAWM (Personal WorkBook LM) is a local workspace for organizing model-assisted work. Profiles group settings and resources; workbooks give each project a place for conversations, sources, and outputs.</p>
+        <h2>1. Create and manage profiles</h2>
+        <p>Start on the home screen. Choose <strong>Create profile</strong>, enter a name, and optionally add a description and PNG, JPEG, or WebP thumbnail (up to 1 MB). Select <strong>Enter</strong> to open a profile. Use <strong>Settings</strong> to edit its details, or <strong>Delete</strong> to remove it.</p>
+        <p>A profile is the top-level workspace boundary. Its workbooks, API keys, callers, and tools are managed within that profile. Deleting a profile removes its associated local data.</p>
+        <h2>2. Create and manage workbooks</h2>
+        <p>Inside a profile, open Workbooks and select <strong>Create workbook</strong>. A title is required; a description and optional image thumbnail help identify it. Open a workbook to work in its chat and manage workbook resources.</p>
+        <ul><li>Search the workbook list by title or description.</li><li>Within a workbook, use its resource controls to organize sources and outputs alongside the conversation.</li><li>Delete only when you intend to remove the workbook and its associated content; deletion cannot be undone from the interface.</li></ul>
+        <h2>3. Add an API key</h2>
+        <p>API keys are configured per profile. Open the profile’s <strong>API keys</strong> section and choose <strong>Add API key</strong>. Enter:</p>
+        <ul>
+          <li><strong>Name</strong> and optional description to recognize the provider or account.</li>
+          <li><strong>Base URL</strong> for the API service.</li>
+          <li><strong>At least one endpoint</strong>, with a unique name and path, such as <code>chat</code> and <code>/v1/chat/completions</code>.</li>
+          <li><strong>Secret / API key</strong>, required when creating an entry.</li>
+          <li><strong>Metadata</strong>, an optional valid JSON object for provider-specific settings.</li>
+        </ul>
+        <p>Select <strong>Add API key</strong> to save. The table shows a key preview, not the full secret. When editing, leave the secret blank to keep the existing value. Use View, Edit, or Delete to manage entries.</p>
+        <div class="notice"><strong>Keep credentials private</strong><p>Credentials are stored by the local application. Do not publish or share your <code>Storage/</code> directory. The interface does not display a saved full secret.</p></div>
+        <h2>4. Create a caller</h2>
+        <p>Open a profile’s <strong>Callers</strong> section and choose <strong>Add caller</strong>. Give it a unique name and description, then provide Python source that defines both required functions:</p>
+        <pre><code>def INVOKE(**kwargs):
+    return {
+        "success": True,
+        "model": kwargs.get("model", ""),
+        "message": {"role": "assistant", "content": "Your response"},
+    }
+
+def MODEL(**kwargs):
+    return {"success": True, "models": [{"id": "example-model", "name": "Example Model"}]}</code></pre>
+        <p><code>INVOKE</code> receives the selected API key, base URL, endpoint, model, messages, and generation settings as keyword arguments. It must return <code>{"success": true, "message": {"role": "assistant", "content": "..."}}</code>; an optional <code>usage</code> object is saved with the response. <code>MODEL</code> returns a list of models with <code>id</code> and <code>name</code>. Select the caller in the workbook chat’s Model &amp; API menu. The caller is an adapter; add its API credential separately under API keys.
+        <h2>5. Create a tool package</h2>
+        <p>A tool package is a ZIP with these non-empty files at its root:</p>
+        <pre><code>my_tool.zip
+├── main.py       Python functions
+├── schema.json   Model-facing function schemas
+└── README.md     Package notes</code></pre>
+        <p>For example, <code>schema.json</code> uses the OpenAI function-tool format:</p>
+        <pre><code>[
+  {
+    "type": "function",
+    "function": {
+      "name": "echo_text",
+      "description": "Return the supplied text.",
+      "parameters": {
+        "type": "object",
+        "properties": {"text": {"type": "string"}},
+        "required": ["text"]
+      }
+    }
+  }
+]</code></pre>
+        <p>Then define a matching function in <code>main.py</code>:</p>
+        <pre><code>def echo_text(text: str) -&gt; dict[str, str]:
+    return {"text": text}</code></pre>
+        <p>Open a profile’s <strong>Tools</strong> section, choose <strong>Upload tool ZIP</strong>, enter a title and optional description, then upload the archive. ZIP uploads are limited to 10 MB. Select the tool in a workbook’s Settings tab to enable it; PAWM’s built-in tools are selected by default for newly created workbooks. Edit to replace a package or update its details; Delete removes it from the profile.</p>
+        <div class="notice"><strong>Run trusted code only</strong><p>Tool functions execute as Python code on the machine running PAWM. The built-in Python and shell runners use temporary working directories and timeouts, but are not operating-system security sandboxes.</p></div>
+        <h2>6. Callers, sources, and outputs</h2>
+        <p><strong>Callers</strong> represent model integrations available to a profile. API key credentials are configured separately; selecting or configuring a caller does not itself add an API secret.</p>
+        <p><strong>Sources</strong> are materials associated with a workbook, such as local files or links. <strong>Outputs</strong> are files or content produced and kept with that workbook. Use the workbook’s side panels to manage resources and preview supported content.</p>
+        <h2>7. Built-in defaults</h2>
+        <p>When a workbook is created, PAWM copies any missing built-in callers and tools into the profile and stores their IDs in the workbook configuration. Builtin manifest <code>path</code> values are made absolute on first import; a <code>relative_path</code> fallback keeps packages relocatable across checkouts. The default caller is preselected in chat. An API key is never created automatically; add one to the profile and select it in workbook settings before sending a message.</p>
+        <h2>8. Troubleshooting</h2>
+        <ul><li>If the app does not load, confirm the backend is running at port 8080 and the <code>Frontend/</code> bundle exists.</li><li>If a profile or resource cannot be found, confirm you are in the correct profile and check the local data folder.</li><li>For API errors, open <code>http://localhost:8080/docs</code> to inspect backend endpoints.</li></ul>
+      </article>
+      <footer class="page-footer"><a href="setup.html">← Setup</a><a href="architecture.html">Next: Project structure →</a></footer>
+    </main>
+  </div>
+</body>
+</html>

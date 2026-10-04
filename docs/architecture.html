@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PAWM project layout and local storage structure.">
+  <title>Project Structure · PAWM Docs</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <div class="site-shell">
+    <aside class="sidebar">
+      <a class="brand" href="index.html"><img src="../public/LOGO.svg" alt="PAWM logo"><span>PAWM <small>DOCUMENTATION</small></span></a>
+      <p class="nav-label">GUIDES</p>
+      <nav aria-label="Documentation">
+        <a class="nav-link" href="index.html">Overview</a>
+        <a class="nav-link" href="setup.html">Setup</a>
+        <a class="nav-link" href="user-manual.html">User manual</a>
+        <a class="nav-link active" aria-current="page" href="architecture.html">Project structure</a>
+      </nav>
+      <div class="sidebar-note"><span class="status-dot"></span> Local-first workspace<br><span>FastAPI · Vue · JSON storage</span></div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar"><span>GUIDES / PROJECT STRUCTURE</span><a href="../LICENSE">MIT License</a></header>
+      <article class="article">
+        <p class="eyebrow">GUIDE 03 · UNDER THE HOOD</p>
+        <h1>Project structure</h1>
+        <p class="lede">The repository separates the browser interface, HTTP API, and reusable filesystem storage layer. JSON records describe workspaces; files and packages live alongside those records.</p>
+        <h2>Repository map</h2>
+        <pre class="tree"><code>.
+├── Backend/                 FastAPI entry point, routes, services, and models
+│   ├── main.py              App setup, API registration, frontend serving
+│   ├── Routes/              HTTP endpoints under /api
+│   ├── Functions/           Route-facing business operations
+│   └── Models/              API request and response models
+├── Pawm/                    Python filesystem storage API and managers
+├── src/                     Vue 3 + TypeScript frontend source
+│   ├── Pages/               Home, profile, and workbook screens
+│   ├── Comps/               Feature components and dialogs
+│   ├── Widgets/              Shared interface controls
+│   └── stores/              Frontend API and state stores
+├── Frontend/                Built frontend served by FastAPI
+├── Storage/                 Data directory configured by the web backend
+├── public/                  Static assets, including LOGO.svg
+└── docs/                    This static documentation site</code></pre>
+        <h2>How a request moves</h2>
+        <div class="flow-row"><span>Browser<br><small>Vue screens</small></span><b aria-hidden="true">→</b><span>FastAPI<br><small><code>/api/...</code></small></span><b aria-hidden="true">→</b><span>Services<br><small>business logic</small></span><b aria-hidden="true">→</b><span>Local files<br><small>JSON + content</small></span></div>
+        <p>The backend registers routers for profiles, workbooks, API keys, callers, tools, sources, chat, and outputs. FastAPI also serves the compiled frontend and exposes a health endpoint.</p>
+        <h2>Local data layout</h2>
+        <p>The web app’s configured storage root is the repository’s <code>Storage/</code> folder. Each profile has a directory containing its records and workbook content:</p>
+        <pre class="tree"><code>Storage/
+├── profiles.json
+└── Profiles/
+    └── &lt;profile-id&gt;/
+        ├── api_keys.json
+        ├── callers.json
+        ├── tools.json
+        ├── workbooks.json
+        ├── Callers/
+        ├── Tools/
+        └── Workbooks/
+            └── &lt;workbook-id&gt;/
+                ├── config.json
+                ├── chat.json
+                ├── sources.json
+                ├── outputs.json
+                ├── Sources/
+                └── Outputs/</code></pre>
+        <p>Record files contain metadata; associated content and uploaded package files live in their corresponding directories. Contents can vary as the application adds data.</p>
+        <h2>Storage API versus web app</h2>
+        <p><code>Pawm/STORAGE.py</code> exposes the Python <code>Storage</code> class, profile and workbook managers, and resource helpers. The storage initializer defaults to <code>Documents/PAWM_DATA</code> when called without a directory. The web backend constructs it with an explicit repository-local <code>Storage/</code> path, so the web app uses that override.</p>
+        <p>Keep local storage out of public repositories and shared archives when it contains credentials or private workbook content. Back up important data before changing or removing files.</p>
+      </article>
+      <footer class="page-footer"><a href="user-manual.html">← User manual</a><a href="index.html">Back to overview ↑</a></footer>
+    </main>
+  </div>
+</body>
+</html>

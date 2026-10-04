@@ -1,0 +1,32 @@
+[
+  [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Fetches current weather data for a specified location. Use this when a user asks about current temperatures, wind speeds, or general weather conditions in a city.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string",
+              "description": "The name of the city to lookup, e.g., 'London', 'Tokyo', or 'New York'."
+            },
+            "temperature_unit": {
+              "type": "string",
+              "description": "The unit system for the temperature display value.",
+              "enum": [
+                "celsius",
+                "fahrenheit"
+              ],
+              "default": "celsius"
+            }
+          },
+          "required": [
+            "city"
+          ]
+        }
+      }
+    }
+  ]
+]

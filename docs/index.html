@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PAWM documentation: setup, user guide, and project structure.">
+  <title>PAWM Docs</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <div class="site-shell">
+    <aside class="sidebar">
+      <a class="brand" href="index.html"><img src="../public/LOGO.svg" alt="PAWM logo"><span>PAWM <small>DOCUMENTATION</small></span></a>
+      <p class="nav-label">GUIDES</p>
+      <nav aria-label="Documentation">
+        <a class="nav-link active" aria-current="page" href="index.html">Overview</a>
+        <a class="nav-link" href="setup.html">Setup</a>
+        <a class="nav-link" href="user-manual.html">User manual</a>
+        <a class="nav-link" href="architecture.html">Project structure</a>
+      </nav>
+      <div class="sidebar-note"><span class="status-dot"></span> Local-first workspace<br><span>FastAPI · Vue · JSON storage</span></div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar"><span>PERSONAL WORKBOOK LM</span><a href="../LICENSE">MIT License</a></header>
+      <section class="hero">
+        <p class="eyebrow">DOCUMENTATION / 01</p>
+        <h1>A workspace for<br><em>thinking with models.</em></h1>
+        <p class="hero-copy">PAWM brings profiles, model credentials, reusable tools, and focused workbooks together in one locally run application.</p>
+        <a class="primary-link" href="setup.html">Get started <span aria-hidden="true">→</span></a>
+        <div class="hero-mark" aria-hidden="true">P<span>.</span></div>
+      </section>
+      <section class="section-block">
+        <div class="section-heading"><p class="eyebrow">START HERE</p><h2>Find your way around</h2></div>
+        <div class="guide-grid">
+          <a class="guide-card" href="setup.html"><span class="card-index">01</span><h3>Install & run</h3><p>Python setup, dependencies, launch command, and frontend development.</p><span class="card-arrow" aria-hidden="true">↗</span></a>
+          <a class="guide-card" href="user-manual.html"><span class="card-index">02</span><h3>Use the workspace</h3><p>Create profiles and workbooks, add API keys, and upload tool packages.</p><span class="card-arrow" aria-hidden="true">↗</span></a>
+          <a class="guide-card" href="architecture.html"><span class="card-index">03</span><h3>Understand the project</h3><p>See how the Vue interface, FastAPI backend, and local data fit together.</p><span class="card-arrow" aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+      <section class="callout"><span class="callout-kicker">A NOTE ON DATA</span><p>The web app currently stores its data in the repository’s <code>Storage/</code> folder. Keep that folder private and back it up if its contents matter to you.</p></section>
+      <footer class="page-footer"><span>PAWM · Project documentation</span><a href="architecture.html">Next: Project structure →</a></footer>
+    </main>
+  </div>
+</body>
+</html>
